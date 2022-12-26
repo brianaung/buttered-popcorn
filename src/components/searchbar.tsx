@@ -1,7 +1,8 @@
-import { Dialog } from "@headlessui/react";
 import { useState } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { trpc } from "@/utils/trpc";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Dialog } from "@headlessui/react";
+import Link from "next/link";
 
 const Searchbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,11 @@ const Searchbar = () => {
     setQuery(e.target.value);
   }
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setQuery('');
+  }
+
   return (
     <>
       <button className="rounded-lg border border-gray-300 text-gray-400 w-1/2 max-w-md h-12 px-4 flex items-center justify-start gap-4 min-w-max" onClick={() => setIsOpen(true)}>
@@ -22,7 +28,7 @@ const Searchbar = () => {
         <div className="ml-auto">Keybind</div>
       </button>
 
-      <Dialog className="relative z-10" open={isOpen} onClose={() => setIsOpen(false)}>
+      <Dialog className="relative z-10" open={isOpen} onClose={handleClose}>
         {/* backdrop */}
         <div className="fixed inset-0 bg-black bg-opacity-25" />
 
@@ -36,8 +42,8 @@ const Searchbar = () => {
               </div>
               {/* search results query */}
               <div className="overflow-y-scroll w-full h-full max-w-full px-4">
-                {searchRes?.data?.results.map(movie => (
-                  <p className="text-left">{movie.title}</p>
+                {searchRes.data?.results.map(movie => (
+                  <Link key={movie.id} href={`/movie-info/${movie.id}`} onClick={handleClose} className="text-left block">{movie.title} </Link>
                 ))}
               </div>
           </Dialog.Panel>
